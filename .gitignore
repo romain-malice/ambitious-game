@@ -1,0 +1,20 @@
+# Quartus generated
+db/
+incremental_db/
+simulation/
+output_files/*.sof
+output_files/*.pof
+output_files/
+*.jdi
+*.pin
+*.rpt
+*.summary
+*.smsg
+*.qws
+*.bak
+greybox_tmp/
+hps_isw_handoff/
+
+# Bitstreams (optional — track if releases matter)
+*.sof
+*.pof

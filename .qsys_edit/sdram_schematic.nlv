@@ -1,0 +1,21 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst unsaved.alt_mem_if_civ_ddr2_emif_0.pll_ref_clk -pg 1
+preplace inst unsaved.alt_mem_if_civ_ddr2_emif_0.status_bridge -pg 1
+preplace inst unsaved.alt_mem_if_civ_ddr2_emif_0.ctl -pg 1
+preplace inst unsaved.alt_mem_if_civ_ddr2_emif_0.phy -pg 1
+preplace inst unsaved.alt_mem_if_civ_ddr2_emif_0 -pg 1 -lvl 1 -y 50
+preplace inst unsaved -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst unsaved.alt_mem_if_civ_ddr2_emif_0.global_reset -pg 1
+preplace netloc EXPORT<net_container>unsaved</net_container>(SLAVE)alt_mem_if_civ_ddr2_emif_0.mem,(SLAVE)unsaved.mem) 1 0 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(SLAVE)alt_mem_if_civ_ddr2_emif_0.status,(SLAVE)unsaved.status) 1 0 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(SLAVE)unsaved.pll_ref_clk,(SLAVE)alt_mem_if_civ_ddr2_emif_0.pll_ref_clk) 1 0 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(MASTER)unsaved.phy_reset,(MASTER)alt_mem_if_civ_ddr2_emif_0.phy_reset) 1 1 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(MASTER)unsaved.phy_clk,(MASTER)alt_mem_if_civ_ddr2_emif_0.phy_clk) 1 1 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(MASTER)unsaved.aux_half_rate_clk,(MASTER)alt_mem_if_civ_ddr2_emif_0.aux_half_rate_clk) 1 1 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(SLAVE)alt_mem_if_civ_ddr2_emif_0.avl,(SLAVE)unsaved.avl) 1 0 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(SLAVE)alt_mem_if_civ_ddr2_emif_0.global_reset,(SLAVE)unsaved.global_reset) 1 0 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(MASTER)unsaved.reset_request,(MASTER)alt_mem_if_civ_ddr2_emif_0.reset_request) 1 1 1 NJ
+preplace netloc EXPORT<net_container>unsaved</net_container>(MASTER)unsaved.aux_full_rate_clk,(MASTER)alt_mem_if_civ_ddr2_emif_0.aux_full_rate_clk) 1 1 1 NJ
+levelinfo -pg 1 0 90 530
+levelinfo -hier unsaved 100 200 390
