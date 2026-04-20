@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22F17C6
-set_global_assignment -name TOP_LEVEL_ENTITY vga
+set_global_assignment -name TOP_LEVEL_ENTITY game
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:51:37  MARCH 17, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"
@@ -92,18 +92,17 @@ set_global_assignment -name VHDL_FILE timer_tb.vhd
 set_global_assignment -name VHDL_FILE controller.vhd
 set_global_assignment -name VHDL_FILE timer.vhd
 set_global_assignment -name VHDL_FILE vga.vhd
-set_global_assignment -name VHDL_FILE game.vhd
 set_global_assignment -name VHDL_FILE controller_tb.vhd
-set_global_assignment -name VHDL_FILE renderer.vhd
 set_global_assignment -name VHDL_FILE game_map.vhd
 set_global_assignment -name VHDL_FILE packages.vhd
-set_global_assignment -name VHDL_FILE vga_tb.vhd
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name EDA_TEST_BENCH_FILE controller_tb.vhd -section_id controller_tb
 set_global_assignment -name EDA_TEST_BENCH_NAME vga_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id vga_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME vga_tb -section_id vga_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE vga_tb.vhd -section_id vga_tb
+set_global_assignment -name VHDL_FILE game.vhd
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VHDL_FILE output_files/test.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

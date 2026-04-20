@@ -2,6 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.rendering_pkg.all;
+
 entity game is
   port (
     clk_50          : in std_logic;
@@ -17,6 +19,9 @@ architecture struct of game is
   signal buttons_s : std_logic_vector(0 to 11) := (others => '0');
   signal enable_s  : std_logic                 := '0';
   signal limit_s   : integer                   := 833_333;  -- 60Hz
+  signal h_frame_s : integer range 0 to 799;
+  signal v_frame_s : integer range 0 to 599;
+  signal px_s      : std_logic                 := '0';
 begin
   controller : entity work.controller(behav)
     port map (
@@ -30,9 +35,16 @@ begin
       interrupt => enable_s
       );
 
-  vga : entity work.vga(Behavioral)
+  vga : entity work.vga(behav)
     port map (
-      clk_50 => clk_50,
-      RED    => red, GREEN => green, BLUE => blue, SYNC => sync
+      clk_50  => clk_50, current_pixel => px_s,
+      h_frame => h_frame_s, v_frame => v_frame_s,
+      RED     => red, GREEN => green, BLUE => blue, SYNC => sync
+      );
+
+  color_test : entity work.test(behav)
+    port map(
+      clk_50 => clk_50, x => h_frame_s, y => v_frame_s,
+      px     => px_s
       );
 end architecture struct;
