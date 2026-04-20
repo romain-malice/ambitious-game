@@ -71,4 +71,4 @@ begin
       end case;
       end if;
   end process;
-end architecture behav; +
+end architecture behav;

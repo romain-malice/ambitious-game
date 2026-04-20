@@ -1,19 +1,21 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_ARITH.all;
-use ieee.std_logic_UNSIGNED.all;
+use ieee.numeric_std.all;
 
 use work.rendering_pkg.all;
 
 entity vga is
   port (
-    CLK_50 : in std_logic;
-    frame  : in std_logic_vector(11 downto 0);
+    CLK_50      : in std_logic;
+    color_array :    in
 
     RED   : out std_logic_vector(3 downto 0);
     GREEN : out std_logic_vector(3 downto 0);
     BLUE  : out std_logic_vector(3 downto 0);
-    SYNC  : out std_logic_vector(1 downto 0)
+    SYNC  : out std_logic_vector(1 downto 0);
+
+    video_en : out std_logic;
+    line
     );
 end vga;
 architecture Behavioral of vga is
@@ -44,10 +46,10 @@ begin
   vga_frame : process
   begin
     wait until rising_edge(CLK_50);
---Generate square
-    if ((v_cnt >= v_back_porch) and (v_cnt     <= v_back_porch)
-        and (h_cnt >= h_back_porch) and (h_cnt <= h_back_porch +)) then
-      color <= frame((h_cnt - h_back_porch) + h_active*(v_cnt - v_back_porch))
+
+    -- Get right color
+    if (video_en = '1') then
+      color <= frame((unsigned(h_cnt) - h_back_porch) + (h_active * (unsigned(v_cnt) - v_back_porch)));
     end if;
 
 --Generate Horizontal Sync

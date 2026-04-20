@@ -49,4 +49,4 @@ begin
     clk_50 <= '1';
     wait for 10 ns;
   end process clk_process;
-end architecture timer_tb;
+end architecture test_bench;

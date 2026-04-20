@@ -9,7 +9,7 @@ entity game_map is
     x, y   : in integer;
 
     height  : out std_logic_vector(1 downto 0) := (others => '0');
-    terrain : out std_logic_vector(1 downto 0) := (others => '0');
+    terrain : out std_logic_vector(1 downto 0) := (others => '0')
     );
 end entity game_map;
 

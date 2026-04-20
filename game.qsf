@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22F17C6
-set_global_assignment -name TOP_LEVEL_ENTITY game_map
+set_global_assignment -name TOP_LEVEL_ENTITY vga
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:51:37  MARCH 17, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"
@@ -55,15 +55,10 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
-set_global_assignment -name VHDL_FILE controller.vhd
-set_global_assignment -name VHDL_FILE timer.vhd
-set_global_assignment -name VHDL_FILE test_bench.vhd
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH controller_tb -section_id eda_simulation
-set_global_assignment -name VHDL_FILE vga.vhd
-set_global_assignment -name VHDL_FILE game.vhd
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH vga_tb -section_id eda_simulation
 set_location_assignment PIN_P16 -to blue[3]
 set_location_assignment PIN_L15 -to blue[2]
 set_location_assignment PIN_K16 -to blue[1]
@@ -80,11 +75,9 @@ set_location_assignment PIN_T15 -to red[1]
 set_location_assignment PIN_F13 -to red[0]
 set_location_assignment PIN_P14 -to sync[1]
 set_location_assignment PIN_N16 -to sync[0]
-set_global_assignment -name VHDL_FILE controller_tb.vhd
 set_global_assignment -name EDA_TEST_BENCH_NAME controller_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id controller_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME controller_tb -section_id controller_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE controller_tb.vhd -section_id controller_tb
 set_location_assignment PIN_J16 -to controller_data
 set_location_assignment PIN_L14 -to controller_latch
 set_location_assignment PIN_A15 -to buttons_out[0]
@@ -95,10 +88,22 @@ set_location_assignment PIN_D1 -to buttons_out[4]
 set_location_assignment PIN_F3 -to buttons_out[5]
 set_location_assignment PIN_B1 -to buttons_out[6]
 set_location_assignment PIN_L3 -to buttons_out[7]
+set_global_assignment -name VHDL_FILE timer_tb.vhd
+set_global_assignment -name VHDL_FILE controller.vhd
+set_global_assignment -name VHDL_FILE timer.vhd
+set_global_assignment -name VHDL_FILE vga.vhd
+set_global_assignment -name VHDL_FILE game.vhd
+set_global_assignment -name VHDL_FILE controller_tb.vhd
 set_global_assignment -name VHDL_FILE renderer.vhd
 set_global_assignment -name VHDL_FILE game_map.vhd
+set_global_assignment -name VHDL_FILE packages.vhd
+set_global_assignment -name VHDL_FILE vga_tb.vhd
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name EDA_TEST_BENCH_FILE controller_tb.vhd -section_id controller_tb
+set_global_assignment -name EDA_TEST_BENCH_NAME vga_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id vga_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME vga_tb -section_id vga_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE vga_tb.vhd -section_id vga_tb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name VHDL_FILE packages.vhd

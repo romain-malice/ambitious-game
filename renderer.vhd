@@ -15,8 +15,8 @@ entity ptm is
     height             : in natural;
     z                  : in natural;
 
-    x_map : out array(0 to RENDER_DIST) of natural;
-    y_map : out array(0 to RENDER_DIST) of natural;
+    x_map : out map_array_t;
+    y_map : out map_array_t
     );
 end entity ptm;
 
