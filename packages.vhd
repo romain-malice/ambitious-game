@@ -7,6 +7,6 @@ package rendering_pkg is
 end package;
 
 package screen_pkg is
-  constant SCREEN_WIDTH : integer := 800;
-  constant SCREEN_HEIGHT : integer := 600;
+  constant SCREEN_WIDTH : integer := 640;  -- 800;
+  constant SCREEN_HEIGHT : integer := 480; -- 600;
 end package;
