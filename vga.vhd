@@ -45,9 +45,11 @@ begin
   video_en <= horizontal_en and vertical_en;
   pixel_read : process(clk_50)
   begin
-    if rising_edge(clk_50) and (video_en = '1') then
-      h_frame <= h_cnt - h_back_porch;
-      v_frame <= v_cnt - v_back_porch;
+    if rising_edge(clk_50) then
+      if (video_en = '1') or (h_cnt = h_back_porch - 1) then
+        h_frame <= h_cnt - h_back_porch + 1;
+        v_frame <= v_cnt - v_back_porch;
+      end if;
     end if;
   end process pixel_read;
   screen_write : process(clk_50)
