@@ -2,15 +2,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.rendering_pkg.all;
+use work.screen_pkg.all;
 
 entity vga is
   port (
     CLK_50 : in std_logic;
 
     current_pixel : in std_logic;
-    h_frame : out integer range 0 to 799 := 0;
-    v_frame : out integer range 0 to 599 := 0;
+    h_frame : out integer range 0 to SCREEN_WIDTH-1 := 0;
+    v_frame : out integer range 0 to SCREEN_HEIGHT-1 := 0;
 
     RED   : out std_logic_vector(3 downto 0);
     GREEN : out std_logic_vector(3 downto 0);
@@ -59,9 +59,9 @@ begin
       if (video_en = '1') then
         case current_pixel is
           when '0' =>
-            color <= "010011010100";
+            color <= "100011001111";
           when '1' =>
-            color <= "111100100111";
+            color <= "111110000000";
         end case;
       end if;
       --Generate Horizontal Sync
