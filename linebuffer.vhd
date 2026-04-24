@@ -1,0 +1,97 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity linebuffer is
+    generic (
+        DATA_W : integer := 4; -- Width of data (-> color index)
+        LEN : integer := 800;
+        ADDR_W : integer := 10;
+        SCALE_W : integer := 3
+    );
+    port (
+        scale : in unsigned(SCALE_W - 1 downto 0);
+
+        -- Input domain (system clock)
+        clk_sys : in std_logic;
+        line_sys : in std_logic;
+        en_in : in std_logic; -- Enable writing
+        data_in : in std_logic_vector(DATA_W - 1 downto 0);
+
+        -- Output domain (pixel clock)
+        clk_pix : in std_logic;
+        line_pix : in std_logic;
+        en_out : in std_logic; -- Enable reading
+        data_out : out std_logic_vector(DATA_W - 1 downto 0)
+    );
+end entity linebuffer;
+
+architecture behav of linebuffer is
+
+    -- Read output data
+    signal addr_out : unsigned(ADDR_W - 1 downto 0);
+    signal h_cnt : unsigned(ADDR_W - 1 downto 0);
+
+    -- Writing parameters
+    signal we : std_logic; -- Write enable
+    signal addr_in : unsigned(ADDR_W - 1 downto 0);
+
+begin
+    ram_inst : entity work.linebuffer_ram
+        port map (
+            data => data_in;
+            rdaddress => addr_out;
+            rdclock => clk_pix;
+            wraddress => addr_in;
+            wrclock => clk_sys;
+            wren => we;
+            q => data_out 
+        );
+
+    read : process (clk_pix) is
+    begin
+        if rising_edge(clk_pix) then
+            -- Reset counters at start of new line
+            if line_pix = '1' then
+                addr_out <= 0;
+                h_cnt <= 0;
+            end if;
+
+            -- Increment counters
+            if en_out = '1' then
+                if h_cnt = scale - 1 then
+                    h_cnt <= 0;
+                    if addr_out /= LEN - 1 then
+                        addr_out <= addr_out + 1;
+                    end if;
+                else
+                    h_cnt <= h_cnt + 1;
+                end if;
+            end if;
+        end if;
+    end process output_data;
+
+    write : process(clk_sys) is
+    begin
+        if rising_edge(clk_sys) then
+            -- (De)activate write enable
+            if en_in = '1' then
+                we <= '1';
+            end if;
+
+            if addr_in = LEN - 1 then
+                we <= '0';
+            end if;
+
+            -- Update control signals
+            if we = '1' then
+                addr_in <= addr_in + 1;
+            end if;
+
+            if line_sys = '1' then
+                addr_in <= 0;
+                we <= 0;
+            end if;
+        end if;
+    end process input_data;
+end architecture behav;
