@@ -1,8 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-use work.calc_pkg.all;
+use ieee.std_logic_ARITH.all;
+use ieee.std_logic_UNSIGNED.all;
 
 entity framebuffer is
   port (
@@ -25,16 +24,15 @@ architecture behav of framebuffer is
   constant BG_COLR : std_logic_vector(COLR_W - 1 downto 0) := x"8CE"; -- Background color (sky blue)
 
   -- Framebuffer params
-  constant FB_WIDTH : integer := 160; -- 200;
-  constant FB_HEIGHT : integer := 120; -- 150;
+  constant FB_WIDTH : integer := 200;
+  constant FB_HEIGHT : integer := 150;
   constant FB_PIXELS : integer := FB_WIDTH * FB_HEIGHT; -- Number of pixels in framebuffer
-  constant FB_ADDR_W : integer := clog2(FB_PIXELS);
+  constant FB_ADDR_W : integer := 15;
   constant FB_DATA_W : integer := COLR_IDX_W; -- Logic color idx
 
   -- Display signals
-  signal clk_pix : std_logic := '0';
   constant COORD_W : integer := 16;
-  signal sx, sy : signed(COORD_W - 1 downto 0);
+  signal sx, sy : std_logic_vector(10 downto 0);
   signal h_sync, v_sync : std_logic;
   signal de, new_frame : std_logic;
 
@@ -56,20 +54,13 @@ architecture behav of framebuffer is
   signal display_b : std_logic_vector(COLR_CH_W - 1 downto 0);
 
 begin
-  clk_25_inst : entity work.clk_25
+  display_inst : entity work.display
     port map(
-      inclk0 => clk_50,
-      c0 => clk_pix,
-      locked => clk_pix_locked);
-
-  display_inst : entity work.display_480p(behav)
-    port map(
-      clk_pix => clk_pix,
-      rst_pix => rst,
+      clk_pix => clk_50,
       hsync => h_sync,
       vsync => v_sync,
       de => de,
-      new_frame => frame,
+      new_frame => new_frame,
       new_line => open,
       sx => sx,
       sy => sy);
@@ -77,22 +68,22 @@ begin
   img_rom_inst : entity work.img_rom
     port map(
       address => std_logic_vector(fb_addr_read),
-      clock => clk_pix,
+      clock => clk_50,
       q => fb_colr_read);
 
   -- purpose: Read the right pixel from the buffer
   -- type   : sequential
-  -- inputs : clk_pix, rst_pix, sx, sy, frame, fb_addr_read
+  -- inputs : clk_50, rst_pix, sx, sy, frame, fb_addr_read
   -- outputs: fb_addr_read, read_fb
-  fb_reading : process (clk_pix) is
+  fb_reading : process (clk_50) is
   begin -- process fb_reading
-    if rising_edge(clk_pix) then -- rising clock edge
-      if (sy >= 0) and (sy < FB_HEIGHT) and (sx >= -LAT) and (sx < FB_WIDTH - LAT) then
+    if rising_edge(clk_50) then -- rising clock edge
+      if (sy >= 24) and (sy < 24 + FB_HEIGHT) and (sx >= 63 - LAT) and (sx < 63 + FB_WIDTH - LAT) then
         read_fb <= '1';
       else
         read_fb <= '0';
       end if;
-      if frame = '1' then
+      if new_frame = '1' then
         fb_addr_read <= (others => '0');
       elsif read_fb = '1' then
         fb_addr_read <= fb_addr_read + 1;
@@ -103,7 +94,7 @@ begin
   -- Color lookup table
   clut_inst : entity work.pal_rom
     port map(
-      clock => clk_pix,
+      clock => clk_50,
       address => std_logic_vector(fb_colr_read),
       q => fb_pix_colr);
 
@@ -114,7 +105,7 @@ begin
   paint_screen : process (sy, sx, fb_pix_colr) is
     variable paint_area : std_logic;
   begin -- process paint_screen
-    if (sy >= 0) and (sy < FB_HEIGHT) and (sx >= 0) and (sx < FB_WIDTH) then
+    if (sy >= 24) and (sy < 24 + FB_HEIGHT) and (sx >= 63) and (sx < 63 + FB_WIDTH) then
       paint_area := '1';
     else
       paint_area := '0';
@@ -146,9 +137,9 @@ begin
   end process;
 
   -- VGA output signals
-  process (clk_pix) is
+  process (clk_50) is
   begin -- process
-    if clk_pix'event and clk_pix = '1' then -- rising clock edge
+    if clk_50'event and clk_50 = '1' then -- rising clock edge
       vga_hsync <= h_sync;
       vga_vsync <= v_sync;
       vga_r <= display_r;

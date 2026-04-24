@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22F17C6
-set_global_assignment -name TOP_LEVEL_ENTITY display
+set_global_assignment -name TOP_LEVEL_ENTITY framebuffer
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:51:37  MARCH 17, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"
@@ -65,14 +65,6 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id controller_t
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME controller_tb -section_id controller_tb
 set_location_assignment PIN_J16 -to controller_data
 set_location_assignment PIN_L14 -to controller_latch
-set_location_assignment PIN_A15 -to buttons_out[0]
-set_location_assignment PIN_A13 -to buttons_out[1]
-set_location_assignment PIN_B13 -to buttons_out[2]
-set_location_assignment PIN_A11 -to buttons_out[3]
-set_location_assignment PIN_D1 -to buttons_out[4]
-set_location_assignment PIN_F3 -to buttons_out[5]
-set_location_assignment PIN_B1 -to buttons_out[6]
-set_location_assignment PIN_L3 -to buttons_out[7]
 set_global_assignment -name EDA_TEST_BENCH_NAME vga_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id vga_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME vga_tb -section_id vga_tb
@@ -80,21 +72,6 @@ set_location_assignment PIN_J15 -to rst
 set_global_assignment -name EDA_TEST_BENCH_NAME fb_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id fb_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME fb_tb -section_id fb_tb
-set_location_assignment PIN_P14 -to SYNC[1]
-set_location_assignment PIN_N16 -to SYNC[0]
-set_location_assignment PIN_P16 -to BLUE[3]
-set_location_assignment PIN_L15 -to BLUE[2]
-set_location_assignment PIN_K16 -to BLUE[1]
-set_location_assignment PIN_N11 -to BLUE[0]
-set_location_assignment PIN_R8 -to CLK_50
-set_location_assignment PIN_P9 -to GREEN[3]
-set_location_assignment PIN_R10 -to GREEN[2]
-set_location_assignment PIN_R11 -to GREEN[1]
-set_location_assignment PIN_T11 -to GREEN[0]
-set_location_assignment PIN_T12 -to RED[3]
-set_location_assignment PIN_T13 -to RED[2]
-set_location_assignment PIN_T15 -to RED[1]
-set_location_assignment PIN_F13 -to RED[0]
 set_global_assignment -name EDA_TEST_BENCH_FILE controller_tb.vhd -section_id controller_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE vga_tb.vhd -section_id vga_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE fb_tb.vhd -section_id fb_tb
@@ -102,19 +79,33 @@ set_global_assignment -name EDA_TEST_BENCH_NAME timer_tb -section_id eda_simulat
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id timer_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME timer_tb -section_id timer_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE timer_tb.vhd -section_id timer_tb
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VHDL_FILE framebuffer.vhd
 set_global_assignment -name VHDL_FILE display.vhd
 set_global_assignment -name VHDL_FILE vga.vhd
 set_global_assignment -name VHDL_FILE controller.vhd
 set_global_assignment -name VHDL_FILE timer.vhd
 set_global_assignment -name VHDL_FILE packages.vhd
-set_global_assignment -name VHDL_FILE game.vhd
 set_global_assignment -name MIF_FILE david.mif
-set_global_assignment -name QIP_FILE img_rom.qip
 set_global_assignment -name MIF_FILE palette.mif
 set_global_assignment -name QIP_FILE pal_rom.qip
 set_global_assignment -name QIP_FILE clk_25.qip
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_location_assignment PIN_R8 -to clk_50
+set_location_assignment PIN_P16 -to vga_b[3]
+set_location_assignment PIN_L15 -to vga_b[2]
+set_location_assignment PIN_K16 -to vga_b[1]
+set_location_assignment PIN_N11 -to vga_b[0]
+set_location_assignment PIN_P9 -to vga_g[3]
+set_location_assignment PIN_R10 -to vga_g[2]
+set_location_assignment PIN_R11 -to vga_g[1]
+set_location_assignment PIN_T11 -to vga_g[0]
+set_location_assignment PIN_P14 -to vga_hsync
+set_location_assignment PIN_T12 -to vga_r[3]
+set_location_assignment PIN_T13 -to vga_r[2]
+set_location_assignment PIN_T15 -to vga_r[1]
+set_location_assignment PIN_F13 -to vga_r[0]
+set_location_assignment PIN_N16 -to vga_vsync
+set_global_assignment -name QIP_FILE img_rom.qip
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
