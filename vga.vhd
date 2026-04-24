@@ -6,7 +6,7 @@ use work.screen_pkg.all;
 
 entity vga is
   port (
-    CLK_50 : in std_logic;
+    clk_50 : in std_logic;
 
     current_pixel : in  std_logic;
     h_frame       : out integer range 0 to SCREEN_WIDTH-1  := 0;
@@ -19,8 +19,6 @@ entity vga is
     );
 end vga;
 architecture behav of vga is
--- Pixel clock
-  signal px_clk          : std_logic;
 --Sync Signals
   signal h_sync          : std_logic;
   signal v_sync          : std_logic;
@@ -33,21 +31,21 @@ architecture behav of vga is
 --Sync Counters
   signal h_cnt           : integer                       := 0;
   signal v_cnt           : integer                       := 0;
-  constant h_back_porch  : integer                       := 48;   -- 64;
-  constant h_active      : integer                       := 640;  -- 800;
-  constant h_front_porch : integer                       := 16;   -- 56;
-  constant h_sync_length : integer                       := 96;   -- 120;
-  constant h_length      : integer                       := 800;  -- 1040;
-  constant v_back_porch  : integer                       := 33;   -- 23;
-  constant v_active      : integer                       := 480;  -- 600;
-  constant v_front_porch : integer                       := 10;   -- 37;
-  constant v_sync_length : integer                       := 2;    -- 6;
-  constant v_length      : integer                       := 525;  -- 666;
+  constant h_back_porch  : integer                       := 64;
+  constant h_active      : integer                       := 800;
+  constant h_front_porch : integer                       := 56;
+  constant h_sync_length : integer                       := 120;
+  constant h_length      : integer                       := 1040;
+  constant v_back_porch  : integer                       := 23;
+  constant v_active      : integer                       := 600;
+  constant v_front_porch : integer                       := 37;
+  constant v_sync_length : integer                       := 6;
+  constant v_length      : integer                       := 666;
 begin
   video_en <= horizontal_en and vertical_en;
-  pixel_read : process(px_clk)
+  pixel_read : process(clk_50)
   begin
-    if rising_edge(px_clk) then
+    if rising_edge(clk_50) then
       if (video_en = '1') or (h_cnt = h_back_porch - 1) then
         h_frame <= h_cnt - h_back_porch + 1;
         v_frame <= v_cnt - v_back_porch;
@@ -55,9 +53,9 @@ begin
     end if;
   end process pixel_read;
 
-  screen_write : process(px_clk)
+  screen_write : process(clk_50)
   begin
-    if rising_edge(px_clk) then
+    if rising_edge(clk_50) then
       -- Choose pixel color
       if (video_en = '1') then
         case current_pixel is
@@ -122,11 +120,4 @@ begin
       SYNC(0)  <= v_sync;
     end if;
   end process screen_write;
-
-  pixel_clock : process(clk_50)
-  begin
-    if rising_edge(clk_50) then
-      px_clk <= not px_clk;
-    end if;
-  end process;
 end behav;
