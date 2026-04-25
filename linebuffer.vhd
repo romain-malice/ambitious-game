@@ -11,16 +11,15 @@ entity linebuffer is
         SCALE_W : integer := 3
     );
     port (
+        clk_50 : in std_logic;
         scale : in std_logic_vector(SCALE_W - 1 downto 0);
 
-        -- Input domain (system clock)
-        clk_sys : in std_logic;
+        -- Input domain
         line_sys : in std_logic;
         en_in : in std_logic; -- Enable writing
         data_in : in std_logic_vector(DATA_W - 1 downto 0);
 
-        -- Output domain (pixel clock)
-        clk_pix : in std_logic;
+        -- Output domain
         line_pix : in std_logic;
         en_out : in std_logic; -- Enable reading
         data_out : out std_logic_vector(DATA_W - 1 downto 0)
@@ -39,19 +38,18 @@ architecture behav of linebuffer is
 
 begin
     ram_inst : entity work.linebuffer_ram
-        port map (
+        port map(
+            clock => clk_50,
             data => data_in,
             rdaddress => addr_out,
-            rdclock => clk_pix,
             wraddress => addr_in,
-            wrclock => clk_sys,
             wren => we,
-            q => data_out 
+            q => data_out
         );
 
-    read : process (clk_pix) is
+    read : process (clk_50) is
     begin
-        if rising_edge(clk_pix) then
+        if rising_edge(clk_50) then
             -- Reset counters at start of new line
             if line_pix = '1' then
                 addr_out <= (others => '0');
@@ -72,9 +70,9 @@ begin
         end if;
     end process read;
 
-    write : process(clk_sys) is
+    write : process (clk_50) is
     begin
-        if rising_edge(clk_sys) then
+        if rising_edge(clk_50) then
             -- (De)activate write enable
             if en_in = '1' then
                 we <= '1';

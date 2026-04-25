@@ -1,41 +1,24 @@
--- Copyright (C) 2025  Altera Corporation. All rights reserved.
--- Your use of Altera Corporation's design tools, logic functions 
--- and other software and tools, and any partner logic 
--- functions, and any output files from any of the foregoing 
--- (including device programming or simulation files), and any 
--- associated documentation or information are expressly subject 
--- to the terms and conditions of the Altera Program License 
--- Subscription Agreement, the Altera Quartus Prime License Agreement,
--- the Altera IP License Agreement, or other applicable license
--- agreement, including, without limitation, that your use is for
--- the sole purpose of programming logic devices manufactured by
--- Altera and sold by Altera or its authorized distributors.  Please
--- refer to the Altera Software License Subscription Agreements 
--- on the Quartus Prime software download page.
+DEPTH = 16;
+WIDTH = 16;
 
--- Quartus Prime generated Memory Initialization File (.mif)
-
-WIDTH=16;
-DEPTH=16;
-
-ADDRESS_RADIX=HEX;
-DATA_RADIX=HEX;
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
 
 CONTENT BEGIN
-	00  :   0000;
-	01  :   0111;
-	02  :   0222;
-	03  :   0333;
-	04  :   0444;
-	05  :   0555;
-	06  :   0666;
-	07  :   0777;
-	08  :   0888;
-	09  :   0999;
-	0A  :   0AAA;
-	0B  :   0BBB;
-	0C  :   0CCC;
-	0D  :   0DDD;
-	0E  :   0EEE;
-	0F  :   0FFF;
+    0 : 0000;
+    1 : 0235;
+    2 : 0825;
+    3 : 0085;
+    4 : 0B53;
+    5 : 0655;
+    6 : 0CCC;
+    7 : 0FFF;
+    8 : 0F05;
+    9 : 0FA0;
+    A : 0FF2;
+    B : 00E3;
+    C : 03BF;
+    D : 087A;
+    E : 0F7B;
+    F : 0FCA;
 END;

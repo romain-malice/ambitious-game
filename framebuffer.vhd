@@ -87,7 +87,7 @@ begin
     if new_line = '1' and sy = 24 then
       first_line <= '1';
       last_line <= '0';
-    elsif new_line = '1' and sy = 24 + FB_HEIGHT then
+    elsif new_line = '1' and sy = 24 + (FB_HEIGHT * FB_SCALE) then
       first_line <= '0';
       last_line <= '1';
     else
@@ -102,7 +102,7 @@ begin
       clock => clk_50,
       q => fb_colr_read);
 
-  -- How much times have we used this linebuffer ?
+  -- Counter for vertical scaling
   lb_counting : process (clk_50) is
   begin
     if rising_edge(clk_50) then
@@ -118,7 +118,7 @@ begin
     end if;
   end process lb_counting;
 
-  -- All lines in the screen need a buffer
+  -- Tells if a line needs a linebuffer (all displayed lines)
   process (clk_50)
   begin
     if rising_edge(clk_50) then
@@ -131,7 +131,7 @@ begin
     end if;
   end process;
 
-  -- Write in the linebuffer when reaching a non-scaled line
+  -- Enable writing in linebuffer every FB_SCALE lines
   lb_enable_input : process (lb_line, lb_line_cnt, lb_px_cnt)
   begin
     if lb_line = '1' and lb_line_cnt = 0 and lb_px_cnt < FB_WIDTH then
@@ -173,12 +173,11 @@ begin
 
   lb_inst : entity work.linebuffer
     port map (
+      clk_50 => clk_50,
       scale => conv_std_logic_vector(FB_SCALE, FB_SCALE_W),
-      clk_sys => clk_50,
       line_sys => new_line,
       en_in => lb_en_in,
       data_in => fb_colr_read,
-      clk_pix => clk_50,
       line_pix => new_line,
       en_out => lb_en_out,
       data_out => lb_colr_out
@@ -188,7 +187,7 @@ begin
   clut_inst : entity work.pal_rom
     port map(
       clock => clk_50,
-      address => std_logic_vector(fb_colr_read),
+      address => std_logic_vector(lb_colr_out),
       q => fb_pix_colr);
 
   -- purpose: Paint the screen
@@ -198,7 +197,7 @@ begin
   paint_screen : process (sy, sx, fb_pix_colr) is
     variable paint_area : std_logic;
   begin -- process paint_screen
-    if (sy >= 24) and (sy < 24 + FB_HEIGHT) and (sx >= 63) and (sx < 63 + FB_WIDTH) then
+    if (sy >= 24) and (sy < 24 + (FB_SCALE * FB_HEIGHT)) and (sx >= 63) and (sx < 63 + (FB_SCALE * FB_WIDTH)) then
       paint_area := '1';
     else
       paint_area := '0';
