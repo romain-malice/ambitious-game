@@ -4,9 +4,23 @@ use ieee.std_logic_UNSIGNED.all;
 use ieee.std_logic_ARITH.all;
 
 entity framebuffer is
+  generic (
+    -- Framebuffer params
+    FB_WIDTH : integer := 200;
+    FB_WIDTH_W : integer := 8;
+    FB_HEIGHT : integer := 150;
+    FB_ADDR_W : integer := 15;
+    FB_DATA_W : integer := 4; -- Logic color idx
+    FB_SCALE : integer := 4;
+    FB_SCALE_W : integer := 3
+  );
   port (
     clk_50 : in std_logic;
     rst : in std_logic;
+
+    data_in : in std_logic_vector(FB_DATA_W - 1 downto 0);
+    addr_in : in std_logic_vector(FB_ADDR_W - 1 downto 0);
+    we : in std_logic;
 
     vga_hsync : out std_logic;
     vga_vsync : out std_logic;
@@ -24,14 +38,7 @@ architecture behav of framebuffer is
   constant BG_COLR : std_logic_vector(COLR_W - 1 downto 0) := x"8CE"; -- Background color (sky blue)
 
   -- Framebuffer params
-  constant FB_WIDTH : integer := 200;
-  constant FB_WIDTH_W : integer := 8;
-  constant FB_HEIGHT : integer := 150;
   constant FB_PIXELS : integer := FB_WIDTH * FB_HEIGHT; -- Number of pixels in framebuffer
-  constant FB_ADDR_W : integer := 15;
-  constant FB_DATA_W : integer := COLR_IDX_W; -- Logic color idx
-  constant FB_SCALE : integer := 4;
-  constant FB_SCALE_W : integer := 3;
 
   -- Display signals
   constant COORD_W : integer := 16;
@@ -45,7 +52,6 @@ architecture behav of framebuffer is
   signal fb_pix_colr : std_logic_vector(COLR_W - 1 downto 0); -- Pixel color from clut (12bit color)
 
   -- Reading framebuffer
-  constant LAT : integer := 3; -- Latency (3 readings = fb + bram + clut)
   signal read_fb : std_logic;
 
   -- Paint screen
@@ -96,11 +102,15 @@ begin
     end if;
   end process h_screen_limits;
 
-  img_rom_inst : entity work.img_rom
+  fb_ram_inst : entity work.framebuffer_ram
     port map(
-      address => std_logic_vector(fb_addr_read),
       clock => clk_50,
-      q => fb_colr_read);
+      data => data_in,
+      rdaddress => std_logic_vector(fb_addr_read),
+      wraddress => addr_in,
+      wren => we,
+      q => fb_colr_read
+    );
 
   -- Counter for vertical scaling
   lb_counting : process (clk_50) is
@@ -172,7 +182,7 @@ begin
   end process;
 
   lb_inst : entity work.linebuffer
-    port map (
+    port map(
       clk_50 => clk_50,
       scale => conv_std_logic_vector(FB_SCALE, FB_SCALE_W),
       line_sys => new_line,
