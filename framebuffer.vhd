@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_ARITH.all;
 use ieee.std_logic_UNSIGNED.all;
+use ieee.std_logic_ARITH.all;
 
 entity framebuffer is
   port (
@@ -25,16 +25,19 @@ architecture behav of framebuffer is
 
   -- Framebuffer params
   constant FB_WIDTH : integer := 200;
+  constant FB_WIDTH_W : integer := 8;
   constant FB_HEIGHT : integer := 150;
   constant FB_PIXELS : integer := FB_WIDTH * FB_HEIGHT; -- Number of pixels in framebuffer
   constant FB_ADDR_W : integer := 15;
   constant FB_DATA_W : integer := COLR_IDX_W; -- Logic color idx
+  constant FB_SCALE : integer := 4;
+  constant FB_SCALE_W : integer := 3;
 
   -- Display signals
   constant COORD_W : integer := 16;
   signal sx, sy : std_logic_vector(10 downto 0);
   signal h_sync, v_sync : std_logic;
-  signal de, new_frame : std_logic;
+  signal de : std_logic;
 
   -- Pixel and color read addresses
   signal fb_addr_read : unsigned(FB_ADDR_W - 1 downto 0) := (others => '0');
@@ -53,6 +56,19 @@ architecture behav of framebuffer is
   signal display_g : std_logic_vector(COLR_CH_W - 1 downto 0);
   signal display_b : std_logic_vector(COLR_CH_W - 1 downto 0);
 
+  -- Linebuffer
+  signal new_frame, new_line, first_line, last_line : std_logic; -- Flags
+  signal cnt_lb_lines : std_logic_vector(FB_SCALE_W - 1 downto 0);
+  signal lb_line_cnt : std_logic_vector(FB_SCALE_W - 1 downto 0);
+
+  signal lb_line : std_logic;
+  signal lb_en_in, lb_en_out : std_logic;
+  signal lb_px_cnt : std_logic_vector(FB_WIDTH_W - 1 downto 0);
+
+  constant LAT_LB : integer := 3;
+
+  signal lb_colr_out : std_logic_vector(FB_DATA_W - 1 downto 0);
+
 begin
   display_inst : entity work.display
     port map(
@@ -61,9 +77,24 @@ begin
       vsync => v_sync,
       de => de,
       new_frame => new_frame,
-      new_line => open,
+      new_line => new_line,
       sx => sx,
       sy => sy);
+
+  -- Sets flags when the vga process reaches the first or the last line
+  h_screen_limits : process (new_line, sy)
+  begin
+    if new_line = '1' and sy = 24 then
+      first_line <= '1';
+      last_line <= '0';
+    elsif new_line = '1' and sy = 24 + FB_HEIGHT then
+      first_line <= '0';
+      last_line <= '1';
+    else
+      first_line <= '0';
+      last_line <= '0';
+    end if;
+  end process h_screen_limits;
 
   img_rom_inst : entity work.img_rom
     port map(
@@ -71,25 +102,87 @@ begin
       clock => clk_50,
       q => fb_colr_read);
 
-  -- purpose: Read the right pixel from the buffer
-  -- type   : sequential
-  -- inputs : clk_50, rst_pix, sx, sy, frame, fb_addr_read
-  -- outputs: fb_addr_read, read_fb
-  fb_reading : process (clk_50) is
-  begin -- process fb_reading
-    if rising_edge(clk_50) then -- rising clock edge
-      if (sy >= 24) and (sy < 24 + FB_HEIGHT) and (sx >= 63 - LAT) and (sx < 63 + FB_WIDTH - LAT) then
-        read_fb <= '1';
-      else
-        read_fb <= '0';
+  -- How much times have we used this linebuffer ?
+  lb_counting : process (clk_50) is
+  begin
+    if rising_edge(clk_50) then
+      if first_line = '1' then
+        lb_line_cnt <= (others => '0');
+      elsif new_line = '1' then
+        if lb_line_cnt = FB_SCALE - 1 then
+          lb_line_cnt <= (others => '0');
+        else
+          lb_line_cnt <= lb_line_cnt + 1;
+        end if;
+      end if;
+    end if;
+  end process lb_counting;
+
+  -- All lines in the screen need a buffer
+  process (clk_50)
+  begin
+    if rising_edge(clk_50) then
+      if first_line = '1' then
+        lb_line <= '1';
+      end if;
+      if last_line = '1' then
+        lb_line <= '0';
+      end if;
+    end if;
+  end process;
+
+  -- Write in the linebuffer when reaching a non-scaled line
+  lb_enable_input : process (lb_line, lb_line_cnt, lb_px_cnt)
+  begin
+    if lb_line = '1' and lb_line_cnt = 0 and lb_px_cnt < FB_WIDTH then
+      lb_en_in <= '1';
+    else
+      lb_en_in <= '0';
+    end if;
+  end process lb_enable_input;
+
+  -- Compute frame and line buffer addresses
+  process (clk_50)
+  begin
+    if rising_edge(clk_50) then
+      if new_line = '1' then
+        lb_px_cnt <= (others => '0');
+      elsif lb_en_in = '1' then
+        fb_addr_read <= fb_addr_read + 1;
+        lb_px_cnt <= lb_px_cnt + 1;
       end if;
       if new_frame = '1' then
         fb_addr_read <= (others => '0');
-      elsif read_fb = '1' then
-        fb_addr_read <= fb_addr_read + 1;
       end if;
     end if;
-  end process fb_reading;
+  end process;
+
+  -- Enable line buffer output (for copied lines)
+  process (clk_50)
+  begin
+    if rising_edge(clk_50) then
+      -- Enables output whenever we are in the frame
+      if sy >= 24 and sy < (24 + (FB_HEIGHT * FB_SCALE)) and
+        sx >= (63 - LAT_LB) and sx < (63 + (FB_WIDTH * FB_SCALE) - LAT_LB) then
+        lb_en_out <= '1';
+      else
+        lb_en_out <= '0';
+      end if;
+    end if;
+  end process;
+
+  lb_inst : entity work.linebuffer
+    port map (
+      scale => conv_std_logic_vector(FB_SCALE, FB_SCALE_W),
+      clk_sys => clk_50,
+      line_sys => new_line,
+      en_in => lb_en_in,
+      data_in => fb_colr_read,
+      clk_pix => clk_50,
+      line_pix => new_line,
+      en_out => lb_en_out,
+      data_out => lb_colr_out
+    );
 
   -- Color lookup table
   clut_inst : entity work.pal_rom
@@ -139,7 +232,7 @@ begin
   -- VGA output signals
   process (clk_50) is
   begin -- process
-    if clk_50'event and clk_50 = '1' then -- rising clock edge
+    if rising_edge(clk_50) then -- rising clock edge
       vga_hsync <= h_sync;
       vga_vsync <= v_sync;
       vga_r <= display_r;

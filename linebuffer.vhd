@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+use ieee.std_logic_UNSIGNED.all;
+use ieee.std_logic_ARITH.all;
 
 entity linebuffer is
     generic (
@@ -10,7 +11,7 @@ entity linebuffer is
         SCALE_W : integer := 3
     );
     port (
-        scale : in unsigned(SCALE_W - 1 downto 0);
+        scale : in std_logic_vector(SCALE_W - 1 downto 0);
 
         -- Input domain (system clock)
         clk_sys : in std_logic;
@@ -29,22 +30,22 @@ end entity linebuffer;
 architecture behav of linebuffer is
 
     -- Read output data
-    signal addr_out : unsigned(ADDR_W - 1 downto 0);
-    signal h_cnt : unsigned(ADDR_W - 1 downto 0);
+    signal addr_out : std_logic_vector(ADDR_W - 1 downto 0);
+    signal h_cnt : std_logic_vector(ADDR_W - 1 downto 0);
 
     -- Writing parameters
     signal we : std_logic; -- Write enable
-    signal addr_in : unsigned(ADDR_W - 1 downto 0);
+    signal addr_in : std_logic_vector(ADDR_W - 1 downto 0);
 
 begin
     ram_inst : entity work.linebuffer_ram
         port map (
-            data => data_in;
-            rdaddress => addr_out;
-            rdclock => clk_pix;
-            wraddress => addr_in;
-            wrclock => clk_sys;
-            wren => we;
+            data => data_in,
+            rdaddress => addr_out,
+            rdclock => clk_pix,
+            wraddress => addr_in,
+            wrclock => clk_sys,
+            wren => we,
             q => data_out 
         );
 
@@ -53,14 +54,14 @@ begin
         if rising_edge(clk_pix) then
             -- Reset counters at start of new line
             if line_pix = '1' then
-                addr_out <= 0;
-                h_cnt <= 0;
+                addr_out <= (others => '0');
+                h_cnt <= (others => '0');
             end if;
 
             -- Increment counters
             if en_out = '1' then
                 if h_cnt = scale - 1 then
-                    h_cnt <= 0;
+                    h_cnt <= (others => '0');
                     if addr_out /= LEN - 1 then
                         addr_out <= addr_out + 1;
                     end if;
@@ -69,7 +70,7 @@ begin
                 end if;
             end if;
         end if;
-    end process output_data;
+    end process read;
 
     write : process(clk_sys) is
     begin
@@ -89,9 +90,9 @@ begin
             end if;
 
             if line_sys = '1' then
-                addr_in <= 0;
-                we <= 0;
+                addr_in <= (others => '0');
+                we <= '0';
             end if;
         end if;
-    end process input_data;
+    end process write;
 end architecture behav;
