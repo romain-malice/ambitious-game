@@ -34,17 +34,4 @@ begin
       clk_50    => clk_50, reset => '0', enable => '1', limit => limit_s,
       interrupt => enable_s
       );
-
-  vga : entity work.vga(behav)
-    port map (
-      clk_50  => clk_50, current_pixel => px_s,
-      h_frame => h_frame_s, v_frame => v_frame_s,
-      RED     => red, GREEN => green, BLUE => blue, SYNC => sync
-      );
-
-  color_test : entity work.test(behav)
-    port map(
-      clk_50 => clk_50, x => h_frame_s, y => v_frame_s,
-      px     => px_s
-      );
 end architecture struct;
