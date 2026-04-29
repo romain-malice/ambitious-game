@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.rendering_pkg.all;
+use work.screen_pkg.all;
 
 entity game is
   port (
@@ -19,8 +19,8 @@ architecture struct of game is
   signal buttons_s : std_logic_vector(0 to 11) := (others => '0');
   signal enable_s  : std_logic                 := '0';
   signal limit_s   : integer                   := 833_333;  -- 60Hz
-  signal h_frame_s : integer range 0 to 799;
-  signal v_frame_s : integer range 0 to 599;
+  signal h_frame_s : integer range 0 to SCREEN_WIDTH-1;
+  signal v_frame_s : integer range 0 to SCREEN_HEIGHT-1;
   signal px_s      : std_logic                 := '0';
 begin
   controller : entity work.controller(behav)

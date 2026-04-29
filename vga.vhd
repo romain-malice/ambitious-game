@@ -4,6 +4,7 @@ use ieee.std_logic_ARITH.all;
 use ieee.std_logic_UNSIGNED.all;
 
 entity vga is
+<<<<<<< HEAD
 	port (
 		CLK_50 : in std_logic;
 		RED : out std_logic_vector(3 downto 0);
