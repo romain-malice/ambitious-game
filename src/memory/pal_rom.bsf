@@ -28,7 +28,7 @@ on the Quartus Prime software download page.
 		(pt 0 32)
 		(input)
 		(text "address[3..0]" (rect 0 0 75 13)(font "Arial" (font_size 8)))
-		(text "address[3..0]" (rect 4 20 67 31)(font "Arial" (font_size 8)))
+		(text "address[3..0]" (rect 4 19 67 31)(font "Arial" (font_size 8)))
 		(line (pt 0 32)(pt 88 32)(line_width 3))
 	)
 	(port
@@ -42,7 +42,7 @@ on the Quartus Prime software download page.
 		(pt 216 32)
 		(output)
 		(text "q[11..0]" (rect 0 0 42 13)(font "Arial" (font_size 8)))
-		(text "q[11..0]" (rect 177 20 212 31)(font "Arial" (font_size 8)))
+		(text "q[11..0]" (rect 177 19 212 31)(font "Arial" (font_size 8)))
 		(line (pt 216 32)(pt 136 32)(line_width 3))
 	)
 	(drawing

@@ -5,8 +5,7 @@ use ieee.numeric_std.all;
 entity clut is
   generic (
     COLR_W : integer := 12;              -- Output color width
-    IDX_W  : integer := 4;               --  Color index width (16 values)
-    F_PAL  : string  := "palette.mif");  -- Color palette file
+    IDX_W  : integer := 4);               --  Color index width (16 values)
 
   port (
     clk_read   : in std_logic;
@@ -22,5 +21,5 @@ begin
 		port map (
 			address => idx_read,
 			clock => clk_read,
-			q => idx_read);
+			q => colr_read);
 end architecture struct;
