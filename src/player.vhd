@@ -7,7 +7,7 @@ use work.math_utils_pkg.all;
 entity player is
     generic (
         MAP_DIM : integer := 100; -- Size of the map
-        SPEED : integer := 1; -- Size of the steps the player takes
+        SPEED : integer := 10; -- Size of the steps the player takes
         TRIG_IDX_W : integer := 8; -- Size of the trig indexes
         TURNING_ANGLE : integer := 1;
         HEIGHT_LIMIT : integer := 20
@@ -42,11 +42,11 @@ begin
         if rising_edge(clk_50) then
             -- Update player position
             if btn_up = '1' and btn_down = '0' then
-                x <= x + cosLookAngle;
-                y <= y + sinLookAngle;
+                x <= x + shift_right(to_unsigned(SPEED, cosLookAngle'length) * cosLookAngle);
+                y <= y + shift_right(to_unsigned(SPEED, sinLookAngle'length) * sinLookAngle);
             elsif btn_down = '1' and btn_up = '0' then
-                x <= x - cosLookAngle;
-                y <= y - sinLookAngle;
+                x <= x - shift_right(to_unsigned(SPEED, cosLookAngle'length) * cosLookAngle);
+                y <= y - shift_right(to_unsigned(SPEED, sinLookAngle'length) * sinLookAngle);
             end if;
 
             -- Update player look angle
@@ -61,7 +61,7 @@ begin
     process (clk_50)
     begin
         if rising_edge(clk_50) then
-            height <= 5;
+            height <= to_unsigned(5, height'length);
         end if;
     end process;
 
