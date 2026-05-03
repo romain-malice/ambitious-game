@@ -64,8 +64,6 @@ begin
             height <= to_unsigned(5, height'length);
         end if;
     end process;
-    --nknn
-    -- test
 
     sin_lut_inst : entity work.sin_lut
         port map(
