@@ -42,11 +42,11 @@ begin
         if rising_edge(clk_50) then
             -- Update player position
             if btn_up = '1' and btn_down = '0' then
-                x <= x + shift_right(to_unsigned(SPEED, cosLookAngle'length) * cosLookAngle);
-                y <= y + shift_right(to_unsigned(SPEED, sinLookAngle'length) * sinLookAngle);
+                x <= x + shift_right(to_unsigned(SPEED, cosLookAngle'length) * cosLookAngle, 10);
+                y <= y + shift_right(to_unsigned(SPEED, sinLookAngle'length) * sinLookAngle, 10);
             elsif btn_down = '1' and btn_up = '0' then
-                x <= x - shift_right(to_unsigned(SPEED, cosLookAngle'length) * cosLookAngle);
-                y <= y - shift_right(to_unsigned(SPEED, sinLookAngle'length) * sinLookAngle);
+                x <= x - shift_right(to_unsigned(SPEED, cosLookAngle'length) * cosLookAngle, 10);
+                y <= y - shift_right(to_unsigned(SPEED, sinLookAngle'length) * sinLookAngle, 10);
             end if;
 
             -- Update player look angle
