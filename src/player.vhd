@@ -24,7 +24,7 @@ entity player is
     );
 end entity player;
 
-architecture Rtl of player is
+architecture behav of player is
     -- Trig
     signal sinLookAngle : signed(TRIG_IDX_W - 1 downto 0);
     signal cosLookAngle : signed(TRIG_IDX_W - 1 downto 0);
@@ -90,4 +90,4 @@ begin
             q => std_logic_vector(cosLookAngle)
         );
 
-end architecture Rtl;
+end architecture behav;
