@@ -24,11 +24,8 @@ entity player is
     );
 end entity player;
 
-<<<<<<< HEAD
-architecture Rtlgit of player is
-=======
+
 architecture behav of player is
->>>>>>> a3713df383ecf6d5dd7c569c5b932c2c2d82b4a6
     -- Trig
     signal sinLookAngle : signed(TRIG_IDX_W - 1 downto 0);
     signal cosLookAngle : signed(TRIG_IDX_W - 1 downto 0);
