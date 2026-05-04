@@ -24,7 +24,7 @@ entity player is
     );
 end entity player;
 
-architecture Rtl of player is
+architecture Rtlgit of player is
     -- Trig
     signal sinLookAngle : signed(TRIG_IDX_W - 1 downto 0);
     signal cosLookAngle : signed(TRIG_IDX_W - 1 downto 0);
@@ -39,6 +39,9 @@ architecture Rtl of player is
     signal x_reg : signed(clog2(MAP_DIM) - 2 downto 0) := (others => '0');
     signal y_reg : signed(clog2(MAP_DIM) - 2 downto 0) := (others => '0');
     signal lookAngle_reg : unsigned(TRIG_IDX_W-1 downto 0) := (others => '0');
+
+    -- Internal signals for conversion
+    
 
 begin
     -- Update output    

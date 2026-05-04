@@ -42,13 +42,13 @@ set_global_assignment -name DEVICE EP4CE22F17C6
 set_global_assignment -name TOP_LEVEL_ENTITY player
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:51:37  MARCH 17, 2026"
-set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
-set_global_assignment -name EDA_SIMULATION_TOOL "Questa Altera FPGA (VHDL)"
+set_global_assignment -name EDA_SIMULATION_TOOL "Questa Intel FPGA (VHDL)"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_timing
@@ -72,13 +72,9 @@ set_location_assignment PIN_J15 -to rst
 set_global_assignment -name EDA_TEST_BENCH_NAME fb_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id fb_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME fb_tb -section_id fb_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE controller_tb.vhd -section_id controller_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE vga_tb.vhd -section_id vga_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE fb_tb.vhd -section_id fb_tb
 set_global_assignment -name EDA_TEST_BENCH_NAME timer_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id timer_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME timer_tb -section_id timer_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE timer_tb.vhd -section_id timer_tb
 set_location_assignment PIN_R8 -to clk_50
 set_location_assignment PIN_P16 -to vga_b[3]
 set_location_assignment PIN_L15 -to vga_b[2]
@@ -94,11 +90,20 @@ set_location_assignment PIN_T13 -to vga_r[2]
 set_location_assignment PIN_T15 -to vga_r[1]
 set_location_assignment PIN_N16 -to vga_vsync
 set_location_assignment PIN_F13 -to vga_r[0]
+set_global_assignment -name EDA_TEST_BENCH_FILE controller_tb.vhd -section_id controller_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE vga_tb.vhd -section_id vga_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE fb_tb.vhd -section_id fb_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../timer_tb.vhd -section_id timer_tb
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VHDL_FILE ../player_tb.vhd
+set_global_assignment -name VHDL_FILE src/player.vhd
+set_global_assignment -name VHDL_FILE src/timer.vhd
 set_global_assignment -name QIP_FILE src/memory/fb/linebuffer_ram.qip
 set_global_assignment -name QIP_FILE src/memory/fb/framebuffer_ram.qip
 set_global_assignment -name QIP_FILE src/memory/palette/pal_rom.qip
 set_global_assignment -name VHDL_FILE src/calculation.vhd
-set_global_assignment -name VHDL_FILE src/player.vhd
 set_global_assignment -name VHDL_FILE src/clut.vhd
 set_global_assignment -name VHDL_FILE src/controller.vhd
 set_global_assignment -name VHDL_FILE src/display.vhd
@@ -107,7 +112,4 @@ set_global_assignment -name VHDL_FILE src/linebuffer.vhd
 set_global_assignment -name VHDL_FILE src/vga.vhd
 set_global_assignment -name QIP_FILE src/memory/trig/sin_lut.qip
 set_global_assignment -name QIP_FILE src/memory/trig/cos_lut.qip
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
