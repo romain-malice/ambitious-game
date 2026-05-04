@@ -17,14 +17,18 @@ entity player is
         buttons : in std_logic_vector(0 to 11);
         en : in std_logic;
 
-        x : out signed(clog2(MAP_DIM) - 2 downto 0);
-        y : out signed(clog2(MAP_DIM) - 2 downto 0);
-        lookAngle : out unsigned(TRIG_IDX_W-1 downto 0);
-        height : out unsigned(clog2(HEIGHT_LIMIT)-1 downto 0)
+        x : out signed(clog2(MAP_DIM) downto 0);
+        y : out signed(clog2(MAP_DIM) downto 0);
+        lookAngle : out unsigned(TRIG_IDX_W - 1 downto 0);
+        height : out unsigned(clog2(HEIGHT_LIMIT) downto 0)
     );
 end entity player;
 
+<<<<<<< HEAD
 architecture Rtlgit of player is
+=======
+architecture behav of player is
+>>>>>>> a3713df383ecf6d5dd7c569c5b932c2c2d82b4a6
     -- Trig
     signal sinLookAngle : signed(TRIG_IDX_W - 1 downto 0);
     signal cosLookAngle : signed(TRIG_IDX_W - 1 downto 0);
@@ -36,23 +40,23 @@ architecture Rtlgit of player is
     alias btn_right : std_logic is buttons(7);
 
     -- Internal signals
-    signal x_reg : signed(clog2(MAP_DIM) - 2 downto 0) := (others => '0');
-    signal y_reg : signed(clog2(MAP_DIM) - 2 downto 0) := (others => '0');
-    signal lookAngle_reg : unsigned(TRIG_IDX_W-1 downto 0) := (others => '0');
+    signal x_reg : signed(clog2(MAP_DIM) downto 0) := (others => '0');
+    signal y_reg : signed(clog2(MAP_DIM) downto 0) := (others => '0');
+    signal lookAngle_reg : unsigned(TRIG_IDX_W - 1 downto 0) := (others => '0');
 
     -- Internal signals for conversion
     
 
 begin
     -- Update output    
-        x <= x_reg ;
-        y <= y_reg ;
-        lookAngle <= lookAngle_reg ; 
-    
+    x <= x_reg;
+    y <= y_reg;
+    lookAngle <= lookAngle_reg;
+
     process (clk_50)
     begin
         if rising_edge(clk_50) then
-            if en = '1' then 
+            if en = '1' then
                 -- Update player position
                 if btn_up = '1' and btn_down = '0' then
                     x_reg <= x_reg + shift_right(to_signed(SPEED, cosLookAngle'length) * cosLookAngle, 10);
@@ -93,4 +97,4 @@ begin
             q => std_logic_vector(cosLookAngle)
         );
 
-end architecture Rtl;
+end architecture behav;
