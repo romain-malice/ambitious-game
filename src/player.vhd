@@ -86,7 +86,9 @@ begin
     process (clk_50)
     begin
         if rising_edge(clk_50) then
-            height <= to_unsigned(5, height'length);
+            if en = '1' then 
+                height <= to_unsigned(5, height'length);
+            end if;
         end if;
     end process;
 
