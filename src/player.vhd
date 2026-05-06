@@ -11,15 +11,15 @@ entity player is
         TRIG_IDX_W_adress : integer := 8; -- Size of the trig indexes (adress input)
         TRIG_IDX_W_q : integer := 11; -- Size of the LUT output (q output)
         TURNING_ANGLE : integer := 1;
-        HEIGHT_LIMIT : integer := 20
+        HEIGHT_LIMIT : integer := 20;
     );
     port (
         clk_50 : in std_logic;
         buttons : in std_logic_vector(0 to 11);
         en : in std_logic;
 
-        x : out signed(clog2(MAP_DIM) downto 0);
-        y : out signed(clog2(MAP_DIM) downto 0);
+        x : out unsigned(clog2(MAP_DIM) downto 0);
+        y : out unsigned(clog2(MAP_DIM) downto 0);
         lookAngle : out unsigned(TRIG_IDX_W_adress - 1 downto 0);
         height : out unsigned(clog2(HEIGHT_LIMIT) downto 0)
     );
@@ -38,8 +38,8 @@ architecture behav of player is
     alias btn_right : std_logic is buttons(7);
 
     -- Internal signals
-    signal x_reg : signed(clog2(MAP_DIM) downto 0) := (others => '0');
-    signal y_reg : signed(clog2(MAP_DIM) downto 0) := (others => '0');
+    signal x_reg : unsigned(clog2(MAP_DIM) downto 0) := (others => '0');
+    signal y_reg : unsigned(clog2(MAP_DIM) downto 0) := (others => '0');
     signal lookAngle_reg : unsigned(TRIG_IDX_W_adress - 1 downto 0) := (others => '0');
 
     -- Internal signals for conversion
@@ -66,11 +66,11 @@ begin
             if en = '1' then
                 -- Update player position
                 if btn_up = '1' and btn_down = '0' then
-                    x_reg <= x_reg + resize(shift_right(to_signed(SPEED, cosLookAngle'length) * cosLookAngle, 10), x_reg'length);
-                    y_reg <= y_reg + resize(shift_right(to_signed(SPEED, sinLookAngle'length) * sinLookAngle, 10), y_reg'length);
+                    x_reg <= x_reg + unsigned(resize(shift_right(to_signed(SPEED, cosLookAngle'length) * cosLookAngle, 10), x_reg'length));
+                    y_reg <= y_reg - unsigned(resize(shift_right(to_signed(SPEED, sinLookAngle'length) * sinLookAngle, 10), y_reg'length));
                 elsif btn_down = '1' and btn_up = '0' then
-                    x_reg <= x_reg - resize(shift_right(to_signed(SPEED, cosLookAngle'length) * cosLookAngle, 10), x_reg'length);
-                    y_reg <= y_reg - resize(shift_right(to_signed(SPEED, sinLookAngle'length) * sinLookAngle, 10), y_reg'length);
+                    x_reg <= x_reg - unsigned(resize(shift_right(to_signed(SPEED, cosLookAngle'length) * cosLookAngle, 10), x_reg'length));
+                    y_reg <= y_reg + unsigned(resize(shift_right(to_signed(SPEED, sinLookAngle'length) * sinLookAngle, 10), y_reg'length));
                 end if;
 
                 -- Update player look angle
