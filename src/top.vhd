@@ -50,9 +50,8 @@ architecture behav of top is
 	signal heading : unsigned(TRIG_IDX_W_adress - 1 downto 0);
 	signal height : unsigned(clog2(HEIGHT_LIMIT) downto 0);
 	signal buttons : std_logic_vector(0 to 11);
-	alias btn_start : std_logic is buttons(3); 
-	alias btn_A : std_logic is buttons(8); 
-
+	alias btn_start : std_logic is buttons(3);
+	alias btn_A : std_logic is buttons(8);
 
 	signal limit : integer := 1000000 * 5;
 	signal timer_interrupt : std_logic;
@@ -66,9 +65,7 @@ architecture behav of top is
 	signal flag_y : integer range 0 to MAP_DIM;
 	signal flag_flag : std_logic := '0';
 	signal flag_cnt : integer range 0 to 3;
-
-	-- Random
-	signal random_signal : integer;
+	signal trigger_flag : std_logic := '1';
 
 begin
 	gen_inst : entity work.voxel_engine
@@ -80,7 +77,7 @@ begin
 			we => we_vox,
 			x0 => x0,
 			y0 => y0,
-			flag_x => to_unsigned(flag_x, clog2(MAP_DIM)), 
+			flag_x => to_unsigned(flag_x, clog2(MAP_DIM)),
 			flag_y => to_unsigned(flag_y, clog2(MAP_DIM))
 			heading => heading,
 			height => height
@@ -133,6 +130,15 @@ begin
 			interrupt => timer_interrupt
 		);
 
+	menu_inst : entity work.start_menu
+		port map(
+			clk => clk_50,
+			trigger => trigger,
+			addr => addr_menu,
+			data => data_menu,
+			we => we_menu
+		);
+
 	state_machine : process (clk_50)
 	begin
 		if rising_edge(clk_50) then
@@ -142,8 +148,16 @@ begin
 					data_fb <= data_menu;
 					we_fb <= we_menu;
 
+					if trigger_flag = '1' then
+						trigger <= '1';
+					else
+						trigger <= '0';
+					end if;
+					trigger_flag <= '0'
+
 					if btn_A = '1' then
 						game_state <= PLAY;
+						trigger_flag <= '1';
 					end if;
 				when PLAY =>
 					addr_fb <= addr_vox;
