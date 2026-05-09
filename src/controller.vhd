@@ -6,8 +6,10 @@ entity controller is
   port (
     clk_50 : in std_logic; -- External clock
     enable : in std_logic;
-    data : in std_logic; -- Serial input from controller
+    data_ctrl : in std_logic; -- Serial input from controller
 
+    -- Index  : 0  1   2    3   4    5     6      7    8  9  10  11
+    -- Button : B  Y  SEL  STA  UP  DOWN  LEFT  RIGHT  A  X  L   R
     buttons : out std_logic_vector(0 to 11) := (others => '0'); -- Parallel output to modify game variables
     latch : out std_logic := '0';
     controller_clk : out std_logic := '0' -- Output to controller
@@ -44,7 +46,7 @@ begin
         when CLK_UP =>
           if timer = 299 then
             if clk_period <= 11 then
-              buttons_reg(clk_period) <= data;
+              buttons_reg(clk_period) <= data_ctrl;
             end if;
 
             timer <= 0;

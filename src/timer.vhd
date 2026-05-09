@@ -20,7 +20,7 @@ architecture behav of timer is
 begin
   process(clk_50, reset) is
   begin
-    if reset = '1' then                 -- When triggered on reset
+    if reset = '0' then                 -- When triggered on reset
       counter   <= 0;
       interrupt <= '0';
     elsif rising_edge(clk_50) then      -- When triggered on clk edge

@@ -300,24 +300,6 @@ end process;
 		cos_val => cos_val);
 		
 		
-		
--- Bresenham
-	Bresenham_inst : entity work.Bresenham
-		port map(
-			clk => clk,
-			rst => rst,
-			start => start_br,
-			x0 => x0_br,
-			y0 => y0_br,
-			x1 => x1_br,
-			y1 => y1_br,
-			x_out => x_out_br,
-			y_out => y_out_br,
-			valid => valid_br,
-			done => done_br
-		);
-		
-		
 end architecture;
 
 

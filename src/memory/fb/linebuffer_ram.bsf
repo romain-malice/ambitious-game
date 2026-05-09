@@ -22,7 +22,7 @@ on the Quartus Prime software download page.
 (header "symbol" (version "1.2"))
 (symbol
 	(rect 0 0 256 136)
-	(text "linebuffer_ram" (rect 87 0 184 15)(font "Arial" (font_size 10)))
+	(text "linebuffer_ram" (rect 81 1 178 16)(font "Arial" (font_size 10)))
 	(text "inst" (rect 8 121 24 132)(font "Arial" ))
 	(port
 		(pt 0 32)
@@ -63,11 +63,11 @@ on the Quartus Prime software download page.
 		(pt 256 88)
 		(output)
 		(text "q[3..0]" (rect 0 0 36 13)(font "Arial" (font_size 8)))
-		(text "q[3..0]" (rect 222 75 252 87)(font "Arial" (font_size 8)))
+		(text "q[3..0]" (rect 217 75 247 87)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 168 88)(line_width 3))
 	)
 	(drawing
-		(text "800 Word(s)" (rect 139 -11 232 177)(font "Arial" )(vertical))
+		(text "800 Word(s)" (rect 139 -5 235 183)(font "Arial" )(vertical))
 		(text "RAM" (rect 148 -18 227 149)(font "Arial" )(vertical))
 		(text "Block Type: AUTO" (rect 40 127 153 263)(font "Arial" ))
 		(line (pt 128 24)(pt 168 24))
