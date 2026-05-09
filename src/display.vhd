@@ -58,7 +58,7 @@ begin
   process (clk_pix)
   begin
     if rising_edge(clk_pix) then
-      if (x >= 63 and x <= 863) and (y >= 24 and y <= 623) then  -- Définition de quelle zone n'est pas noire
+      if (x >= 63 and x <= 863) and (y >= 24 and y <= 623) then -- Définition de quelle zone n'est pas noire
         de <= '1';
       else
         de <= '0';
