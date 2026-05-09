@@ -18,7 +18,7 @@ entity top is
     port (
         clk_50    : in  std_logic;
         rst       : in  std_logic;
-		  data_ctrl : in std_logic;
+		data_ctrl : in std_logic;
 		  
         vga_hsync : out std_logic;
         vga_vsync : out std_logic;
