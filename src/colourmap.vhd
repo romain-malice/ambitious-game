@@ -10,6 +10,8 @@ entity colourmap is
 	port (
 		x : in integer range 0 to MAP_WIDTH - 1;
 		y : in integer range 0 to MAP_HEIGHT - 1;
+		flag_x : in integer range 0 to MAP_WIDTH - 1;
+		flag_y : in integer range 0 to MAP_HEIGHT - 1;
 		color : out std_logic_vector(3 downto 0);
 		altitude : out integer range 0 to 255
 	);
@@ -37,7 +39,9 @@ begin
 		elsif y > 4 * 99 then -- beach
 			color <= x"4";
 			altitude <= 0;
-
+		elsif x = flag_x and y = flag_y -- flag
+			color <= x"3";
+			altitude <= 10;
 		else
 			color <= x"8";
 			altitude <= 0;

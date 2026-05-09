@@ -32,6 +32,9 @@ entity voxel_engine is
         heading : in unsigned(TRIG_IDX_W_adress - 1 downto 0);
         height : in unsigned(clog2(HEIGHT_LIMIT) downto 0);
 
+        flag_x : in unsigned(clog2(MAP_DIM) downto 0);
+        flag_y : in unsigned(clog2(MAP_DIM) downto 0);
+
         addr : out std_logic_vector(14 downto 0);
         data : out std_logic_vector(3 downto 0);
         we : out std_logic
@@ -118,6 +121,8 @@ begin
         port map(
             x => map_x,
             y => map_y,
+            flag_x => flag_x,
+            flag_y => flag_y,
             color => color,
             altitude => altitude);
 
@@ -154,7 +159,7 @@ begin
 
                         -- Latch the variable describing the state of the plane
                     when LATCH_DATA =>
-                        -- Sate variables of the plane
+                        -- State variables of the plane
                         plane_x0 <= to_integer(x0);
                         plane_Y0 <= to_integer(y0);
                         plane_height <= to_integer(height);

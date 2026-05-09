@@ -5,6 +5,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.math_utils_pkg.all;
+use ieee.math_real.uniform;
+use ieee.math_real.floor;
+use work.game_package.all;
 
 entity top is
 	generic (
@@ -29,31 +32,55 @@ entity top is
 end entity;
 
 architecture behav of top is
-	signal addr : std_logic_vector(14 downto 0);
-	signal data : std_logic_vector(3 downto 0);
-	signal we : std_logic;
+	signal addr_vox : std_logic_vector(14 downto 0);
+	signal data_vox : std_logic_vector(3 downto 0);
+	signal we_vox : std_logic;
+
+	signal addr_menu : std_logic_vector(14 downto 0);
+	signal data_menu : std_logic_vector(3 downto 0);
+	signal we_menu : std_logic;
+
+	signal addr_fb : std_logic_vector(14 downto 0);
+	signal data_fb : std_logic_vector(3 downto 0);
+	signal we_fb : std_logic;
 
 	signal x0 : unsigned(clog2(MAP_DIM) downto 0);
 	signal y0 : unsigned(clog2(MAP_DIM) downto 0);
 	signal heading : unsigned(TRIG_IDX_W_adress - 1 downto 0);
 	signal height : unsigned(clog2(HEIGHT_LIMIT) downto 0);
 	signal buttons : std_logic_vector(0 to 11);
+	alias btn_start : std_logic is buttons(3); 
+	alias btn_A : std_logic is buttons(8); 
+
 
 	signal limit : integer := 1000000 * 5;
 	signal timer_interrupt : std_logic;
 
 	-- Enable for the controller entity
 	signal enable : std_logic := '1';
+
+	-- Game state
+	signal game_state : game_state_t := START;
+	signal flag_x : integer range 0 to MAP_DIM;
+	signal flag_y : integer range 0 to MAP_DIM;
+	signal flag_flag : std_logic := '0';
+	signal flag_cnt : integer range 0 to 3;
+
+	-- Random
+	signal random_signal : integer;
+
 begin
 	gen_inst : entity work.voxel_engine
 		port map(
 			clk => clk_50,
 			rst => rst,
-			addr => addr,
-			data => data,
-			we => we,
+			addr => addr_vox,
+			data => data_vox,
+			we => we_vox,
 			x0 => x0,
 			y0 => y0,
+			flag_x => to_unsigned(flag_x, clog2(MAP_DIM)), 
+			flag_y => to_unsigned(flag_y, clog2(MAP_DIM))
 			heading => heading,
 			height => height
 		);
@@ -76,9 +103,9 @@ begin
 			buttons => buttons,
 			clk_50 => clk_50,
 			rst => rst,
-			addr_in => addr,
-			data_in => data,
-			we => we,
+			addr_in => addr_fb,
+			data_in => data_fb,
+			we => we_fb,
 			vga_hsync => vga_hsync,
 			vga_vsync => vga_vsync,
 			vga_r => vga_r,
@@ -105,4 +132,38 @@ begin
 			interrupt => timer_interrupt
 		);
 
+	state_machine : process (clk_50)
+	begin
+		if rising_edge(clk_50) then
+			case game_state is
+				when START =>
+					addr_fb <= addr_menu;
+					data_fb <= data_menu;
+					we_fb <= we_menu;
+
+					if btn_A = '1' then
+						game_state <= PLAY;
+					end if;
+				when PLAY =>
+					addr_fb <= addr_vox;
+					data_fb <= data_vox;
+					we_fb <= we_vox;
+
+					if flag_flag = '0' then
+						flag_x <= 10 * flag_cnt;
+						flag_y <= 20 * flag_cnt;
+						flag_flag <= '1';
+					else
+						if to_integer(x0) = flag_x and to_integer(y0) = flag_y then
+							flag_flag <= '0';
+							if flag_cnt = 3 then
+								game_state <= START;
+							else
+								flag_cnt <= flag_cnt + 1;
+							end if;
+						end if;
+					end if;
+			end case;
+		end if;
+	end process state_machine;
 end architecture;
