@@ -15,11 +15,11 @@ entity framebuffer is
     FB_SCALE_W : integer := 3
   );
   port (
-		buttons : in std_logic_vector(0 to 11);
+    buttons : in std_logic_vector(0 to 11);
     clk_50 : in std_logic;
     rst : in std_logic;
-	 
-	 data_in : in std_logic_vector(FB_DATA_W - 1 downto 0);
+
+    data_in : in std_logic_vector(FB_DATA_W - 1 downto 0);
     addr_in : in std_logic_vector(FB_ADDR_W - 1 downto 0);
     we : in std_logic;
 
@@ -37,7 +37,6 @@ architecture behav of framebuffer is
   constant COLR_W : integer := 3 * COLR_CH_W; -- Total color width
   constant COLR_IDX_W : integer := 4; -- Width of color index (16 colors)
   constant BG_COLR : std_logic_vector(COLR_W - 1 downto 0) := x"FFF";--x"8CE"; -- Background color (sky blue)
-
 
   -- Display signals
   --constant COORD_W : integer := 16;
@@ -74,8 +73,6 @@ architecture behav of framebuffer is
   constant LAT_LB : integer := 3;
 
   signal lb_colr_out : std_logic_vector(FB_DATA_W - 1 downto 0);
-  
-  
 
 begin
   display_inst : entity work.display
@@ -103,17 +100,15 @@ begin
       last_line <= '0';
     end if;
   end process h_screen_limits;
-  
+
   ram_inst : entity work.framebuffer_ram
     port map(
-        clock     => clk_50,
-        rdaddress => std_logic_vector(fb_addr_read),
-        wraddress => addr_in,
-        data      => data_in,
-        wren      => we,
-        q         => fb_colr_read);
-
-  
+      clock => clk_50,
+      rdaddress => std_logic_vector(fb_addr_read),
+      wraddress => addr_in,
+      data => data_in,
+      wren => we,
+      q => fb_colr_read);
 
   -- Counter for vertical scaling
   lb_counting : process (clk_50) is
@@ -176,7 +171,7 @@ begin
     if rising_edge(clk_50) then
       -- Enables output whenever we are in the frame
       if sy >= 24 and sy < (24 + (FB_HEIGHT * FB_SCALE)) and
-        sx >= (63 - LAT_LB) and sx < (63 + (FB_WIDTH * FB_SCALE) - LAT_LB) then  -- I think the change was here
+        sx >= (63 - LAT_LB) and sx < (63 + (FB_WIDTH * FB_SCALE) - LAT_LB) then -- I think the change was here
         lb_en_out <= '1';
       else
         lb_en_out <= '0';
@@ -185,7 +180,7 @@ begin
   end process;
 
   lb_inst : entity work.linebuffer
-    port map (
+    port map(
       clk_50 => clk_50,
       scale => conv_std_logic_vector(FB_SCALE, FB_SCALE_W),
       line_sys => new_line,
@@ -203,8 +198,6 @@ begin
       address => std_logic_vector(lb_colr_out),
       q => fb_pix_colr);
 
-		
-		
   -- purpose: Paint the screen
   -- type   : combinational
   -- inputs : sx, sy
@@ -228,11 +221,6 @@ begin
       paint_b <= BG_COLR(COLR_CH_W - 1 downto 0);
     end if;
   end process paint_screen;
-  
-  
-  
-  
-  
 
   -- Combinatorial update of the rgb signals sent to the vga
   process (de, paint_r, paint_g, paint_b) is
@@ -254,15 +242,13 @@ begin
     if rising_edge(clk_50) then -- rising clock edge
       vga_hsync <= h_sync;
       vga_vsync <= v_sync;
-		--vga_r <= (others => '1');
-		--vga_g <= (others => '1');
-		--vga_b <= (others => '1');
+      --vga_r <= (others => '1');
+      --vga_g <= (others => '1');
+      --vga_b <= (others => '1');
       vga_r <= display_r;
       vga_g <= display_g;
       vga_b <= display_b;
     end if;
   end process;
-  
-  
-  
+
 end architecture;

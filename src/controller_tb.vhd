@@ -6,12 +6,12 @@ entity controller_tb is
 end entity controller_tb;
 
 architecture test_bench of controller_tb is
-  signal clk_50, enable              : std_logic;
+  signal clk_50, enable : std_logic;
   signal data, latch, controller_clk : std_logic;
-  signal buttons                     : std_logic_vector(0 to 11) := (others => '0');
+  signal buttons : std_logic_vector(0 to 11) := (others => '0');
 begin
   dut : entity work.controller(behav)
-    port map (clk_50, enable, data, buttons, latch, controller_clk);
+    port map(clk_50, enable, data, buttons, latch, controller_clk);
 
   stimulus : process
   begin
@@ -28,29 +28,29 @@ begin
 
     -- Act as the controller responding to inputs
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press B
+    data <= '0'; -- Press B
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Y
+    data <= '0'; -- Press Y
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Sel
+    data <= '0'; -- Press Sel
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press Strt
+    data <= '1'; -- Press Strt
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Up
+    data <= '0'; -- Press Up
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Down
+    data <= '0'; -- Press Down
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Left
+    data <= '0'; -- Press Left
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Right
+    data <= '0'; -- Press Right
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press A
+    data <= '1'; -- Press A
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press X
+    data <= '1'; -- Press X
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press L
+    data <= '0'; -- Press L
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press R
+    data <= '0'; -- Press R
 
     -- Disable reading
     enable <= '0';
@@ -63,29 +63,29 @@ begin
 
     -- Act as the controller responding to inputs
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press B
+    data <= '0'; -- Press B
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press Y
+    data <= '1'; -- Press Y
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Sel
+    data <= '0'; -- Press Sel
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Strt
+    data <= '0'; -- Press Strt
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Up
+    data <= '0'; -- Press Up
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Down
+    data <= '0'; -- Press Down
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press Left
+    data <= '1'; -- Press Left
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press Right
+    data <= '0'; -- Press Right
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press A
+    data <= '1'; -- Press A
     wait until rising_edge(controller_clk);
-    data <= '1';                        -- Press X
+    data <= '1'; -- Press X
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press L
+    data <= '0'; -- Press L
     wait until rising_edge(controller_clk);
-    data <= '0';                        -- Press R
+    data <= '0'; -- Press R
 
     -- Disable reading
     enable <= '0';

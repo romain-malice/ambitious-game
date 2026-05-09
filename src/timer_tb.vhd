@@ -8,17 +8,17 @@ end entity timer_tb;
 
 architecture test_bench of timer_tb is
   signal clk_50, reset, enable : std_logic;
-  signal limit                 : integer;
-  signal interrupt             : std_logic;
+  signal limit : integer;
+  signal interrupt : std_logic;
 begin
   dut : entity work.timer(behav)
-    port map (clk_50, reset, enable, limit, interrupt);
+    port map(clk_50, reset, enable, limit, interrupt);
   stimulus : process
   begin
     -- Initial state
-    reset  <= '0';
+    reset <= '0';
     enable <= '0';
-    limit  <= 5;
+    limit <= 5;
 
     -- Wait for a couple cycles before starting
     wait for 40 ns;
@@ -38,7 +38,7 @@ begin
 
     wait for 100 ns;
     assert false
-      report "End of simulation"
+    report "End of simulation"
       severity failure;
   end process stimulus;
 
