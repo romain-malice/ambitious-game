@@ -9,7 +9,7 @@ use work.game_package.all;
 
 entity start_menu is
   generic(
-    NB_PIXELS : std_logic_vector := std_logic_vector(to_unsigned(30000, 15))
+    NB_PIXELS : unsigned(14 downto 0) := to_unsigned(30_000, 15)
   );
     port (
         clk  : in  std_logic;
@@ -24,45 +24,37 @@ end entity;
 architecture behav of start_menu is
 
   signal start_state : start_state_t := IDLE; 
+  signal addr_reg : unsigned(14 downto 0) := (others => '0'); 
 
-begin
-
-  process(trigger)
-  begin
-    
-  end process; 
-    
+begin  
 
   process(clk)
   begin
     if rising_edge(clk) then
       if start_state = WRITING then
-        if addr = NB_PIXELS then 
+        if addr_reg = NB_PIXELS then 
           we <= '0'; 
           start_state <= IDLE;
         else 
-
-
-
-          if unsigned(addr) <= 125 and unsigned(addr) >= 75 then
+          if unsigned(addr_reg) <= 125 and unsigned(addr_reg) >= 75 then
             data <= x"A";
           else 
             data <= x"C";
           end if;
-        end if;
 
-
-
-     
-      else
+          addr_reg <= addr_reg + 1;
+        end if; 
+      else -- IDLE state
         if trigger = '1' then 
           if start_state = IDLE then 
             start_state <= WRITING;
-            addr <= (others => '0'); 
+            addr_reg <= (others => '0'); 
             we <= '1';
           end if; 
         end if;
       end if;
+
+      addr <= std_logic_vector(addr_reg);
     end if;  
       
   end process;

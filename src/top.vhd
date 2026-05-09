@@ -61,10 +61,11 @@ architecture behav of top is
 
 	-- Game state
 	signal game_state : game_state_t := START;
-	signal flag_x : integer range 0 to MAP_DIM;
-	signal flag_y : integer range 0 to MAP_DIM;
+	signal flag_x : unsigned(clog2(MAP_DIM) downto 0) := (others => '0');
+	signal flag_y : unsigned(clog2(MAP_DIM) downto 0) := (others => '0');
 	signal flag_flag : std_logic := '0';
 	signal flag_cnt : integer range 0 to 3;
+	signal trigger : std_logic := '0';
 	signal trigger_flag : std_logic := '1';
 
 begin
@@ -77,8 +78,9 @@ begin
 			we => we_vox,
 			x0 => x0,
 			y0 => y0,
-			flag_x => to_unsigned(flag_x, clog2(MAP_DIM)),
-			flag_y => to_unsigned(flag_y, clog2(MAP_DIM))
+			flag_x => flag_x,
+			flag_y => flag_y,
+			flag_flag => flag_flag,
 			heading => heading,
 			height => height
 		);
@@ -153,7 +155,7 @@ begin
 					else
 						trigger <= '0';
 					end if;
-					trigger_flag <= '0'
+					trigger_flag <= '0';
 
 					if btn_A = '1' then
 						game_state <= PLAY;
@@ -165,8 +167,8 @@ begin
 					we_fb <= we_vox;
 
 					if flag_flag = '0' then
-						flag_x <= 10 * flag_cnt;
-						flag_y <= 20 * flag_cnt;
+						flag_x <= to_unsigned(10 * flag_cnt, flag_x'length);
+						flag_y <= to_unsigned(20 * flag_cnt, flag_x'length);
 						flag_flag <= '1';
 					else
 						if to_integer(x0) = flag_x and to_integer(y0) = flag_y then

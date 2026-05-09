@@ -34,6 +34,7 @@ entity voxel_engine is
 
         flag_x : in unsigned(clog2(MAP_DIM) downto 0);
         flag_y : in unsigned(clog2(MAP_DIM) downto 0);
+        flag_flag : in std_logic;
 
         addr : out std_logic_vector(14 downto 0);
         data : out std_logic_vector(3 downto 0);
@@ -123,6 +124,7 @@ begin
             y => map_y,
             flag_x => flag_x,
             flag_y => flag_y,
+            flag_flag => flag_flag,
             color => color,
             altitude => altitude);
 
